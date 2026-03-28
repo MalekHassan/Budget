@@ -1,0 +1,42 @@
+.month-picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-lg);
+}
+
+.month-picker__btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  color: var(--color-text);
+  transition: background var(--transition-fast);
+}
+
+.month-picker__btn:hover {
+  background: var(--color-surface-hover);
+}
+
+.month-picker__label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.month-picker__month {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+}
+
+.month-picker__year {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.month-picker__lock-icon {
+  color: var(--color-danger);
+  margin-top: 2px;
+}

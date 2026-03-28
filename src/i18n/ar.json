@@ -1,0 +1,92 @@
+{
+  "app": {
+    "name": "ميزانية البيت",
+    "tagline": "إدارة ذكية لميزانية العائلة"
+  },
+  "nav": {
+    "dashboard": "الرئيسية",
+    "monthly": "الشهري",
+    "analytics": "التحليلات",
+    "settings": "الإعدادات"
+  },
+  "auth": {
+    "signIn": "تسجيل الدخول بجوجل",
+    "signOut": "تسجيل الخروج",
+    "welcome": "أهلاً بك في ميزانية البيت",
+    "subtitle": "تابع مصاريف العائلة، خطط ميزانيتك، ووفّر أكثر.",
+    "signingIn": "جاري تسجيل الدخول..."
+  },
+  "dashboard": {
+    "title": "الرئيسية",
+    "totalIncome": "إجمالي الدخل",
+    "totalExpenses": "إجمالي المصاريف",
+    "savings": "الباقي / التوفير",
+    "planned": "المخطط",
+    "actual": "الفعلي",
+    "recentTransactions": "آخر المعاملات",
+    "addTransaction": "إضافة معاملة",
+    "noTransactions": "لا توجد معاملات بعد",
+    "overBudget": "تجاوز الميزانية",
+    "underBudget": "أقل من الميزانية",
+    "onTrack": "ضمن الميزانية"
+  },
+  "transaction": {
+    "expense": "مصروف",
+    "income": "دخل",
+    "amount": "المبلغ",
+    "category": "الفئة",
+    "description": "الوصف",
+    "date": "التاريخ",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "addNew": "إضافة معاملة"
+  },
+  "budget": {
+    "title": "إعداد الميزانية",
+    "newMonth": "شهر جديد",
+    "copyPrevious": "نسخ من الشهر السابق",
+    "addCategory": "إضافة فئة",
+    "removeCategory": "حذف",
+    "plannedAmount": "المبلغ المخطط",
+    "categoryName": "اسم الفئة",
+    "categoryNameEn": "الاسم بالإنجليزي",
+    "expenses": "المصاريف",
+    "income": "الدخل",
+    "save": "حفظ الميزانية",
+    "suggestion": "متوسط آخر 3 أشهر"
+  },
+  "analytics": {
+    "title": "التحليلات",
+    "comparison": "مقارنة الأشهر",
+    "trends": "اتجاهات الفئات",
+    "dateRange": "نطاق التاريخ",
+    "from": "من",
+    "to": "إلى",
+    "totalSpent": "إجمالي الإنفاق",
+    "avgMonthly": "المتوسط الشهري"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "language": "اللغة",
+    "theme": "المظهر",
+    "dark": "داكن",
+    "light": "فاتح",
+    "household": "المنزل",
+    "members": "الأعضاء",
+    "invite": "دعوة عضو",
+    "export": "تصدير البيانات",
+    "notifications": "الإشعارات",
+    "about": "حول التطبيق"
+  },
+  "common": {
+    "jd": "د.أ",
+    "loading": "جاري التحميل...",
+    "error": "حدث خطأ ما",
+    "retry": "إعادة المحاولة",
+    "noData": "لا توجد بيانات",
+    "confirm": "تأكيد",
+    "back": "رجوع"
+  }
+}

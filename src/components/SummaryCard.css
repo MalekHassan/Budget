@@ -1,0 +1,68 @@
+.summary-card {
+  padding: var(--spacing-md);
+  min-width: 0;
+}
+
+.summary-card__label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.summary-card__actual {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  margin-bottom: var(--spacing-sm);
+}
+
+.summary-card--income .summary-card__actual {
+  color: var(--color-success);
+}
+
+.summary-card--expense .summary-card__actual {
+  color: var(--color-danger);
+}
+
+.summary-card--savings .summary-card__actual {
+  color: var(--color-primary);
+}
+
+.summary-card__progress-track {
+  height: 4px;
+  background: var(--color-surface-border);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: var(--spacing-xs);
+}
+
+.summary-card__progress-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width var(--transition-base);
+}
+
+.summary-card--income .summary-card__progress-fill {
+  background: var(--color-success);
+}
+
+.summary-card--expense .summary-card__progress-fill {
+  background: var(--color-danger);
+}
+
+.summary-card__footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-xs);
+}
+
+.summary-card__planned {
+  color: var(--color-text-muted);
+}
+
+.summary-card__diff.positive {
+  color: var(--color-success);
+}
+
+.summary-card__diff.negative {
+  color: var(--color-danger);
+}

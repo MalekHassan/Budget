@@ -1,0 +1,45 @@
+{
+  "name": "budget",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MalekHassan/Budget.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/MalekHassan/Budget/issues"
+  },
+  "homepage": "https://github.com/MalekHassan/Budget#readme",
+  "dependencies": {
+    "date-fns": "^4.1.0",
+    "exceljs": "^4.4.0",
+    "firebase": "^12.11.0",
+    "i18next": "^25.10.10",
+    "lucide-react": "^1.7.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-i18next": "^16.6.6",
+    "react-is": "^19.2.4",
+    "react-router-dom": "^7.13.2",
+    "recharts": "^3.8.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "framer-motion": "^12.38.0",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.3",
+    "vite-plugin-pwa": "^1.2.0"
+  }
+}

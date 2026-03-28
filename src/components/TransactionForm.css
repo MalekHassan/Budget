@@ -1,0 +1,365 @@
+.txn-form-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.txn-form {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  width: 100%;
+  max-width: var(--max-width);
+  max-height: 90dvh;
+  overflow-y: auto;
+  padding: var(--spacing-lg);
+}
+
+.txn-form__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-lg);
+}
+
+.txn-form__header h2 {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+}
+
+.txn-form__close {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  color: var(--color-text-secondary);
+  transition: background var(--transition-fast);
+}
+
+.txn-form__close:hover {
+  background: var(--color-surface-hover);
+}
+
+.txn-form__toggle {
+  display: flex;
+  gap: var(--spacing-xs);
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+  padding: 3px;
+  margin-bottom: var(--spacing-lg);
+}
+
+.txn-form__toggle-btn {
+  flex: 1;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  transition: all var(--transition-fast);
+}
+
+.txn-form__toggle-btn--active {
+  color: white;
+}
+
+.txn-form__toggle-btn--expense.txn-form__toggle-btn--active {
+  background: var(--color-danger);
+}
+
+.txn-form__toggle-btn--income.txn-form__toggle-btn--active {
+  background: var(--color-success);
+}
+
+.txn-form__field {
+  margin-bottom: var(--spacing-md);
+}
+
+.txn-form__field label {
+  display: block;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-xs);
+  font-weight: 500;
+}
+
+.txn-form__field input,
+.txn-form__field select {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-bg);
+  border: 1px solid var(--color-surface-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+}
+
+.txn-form__field select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239090A7' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+[dir='rtl'] .txn-form__field select {
+  background-position: left 12px center;
+  padding-right: var(--spacing-md);
+  padding-left: 36px;
+}
+
+.txn-form__amount-input {
+  font-size: var(--font-size-2xl) !important;
+  font-weight: 700 !important;
+  text-align: center;
+}
+
+/* Receipt Scanner */
+.txn-form__receipt {
+  margin-bottom: var(--spacing-md);
+}
+
+.txn-form__receipt-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.txn-form__receipt-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md);
+  border: 2px dashed var(--color-surface-border);
+  border-radius: var(--radius-md);
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  background: var(--color-primary-light);
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.txn-form__receipt-btn:hover {
+  border-color: var(--color-primary);
+}
+
+.txn-form__receipt-preview {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--color-surface-border);
+}
+
+.txn-form__receipt-img {
+  width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  display: block;
+}
+
+.txn-form__receipt-remove {
+  position: absolute;
+  top: var(--spacing-xs);
+  right: var(--spacing-xs);
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+[dir='rtl'] .txn-form__receipt-remove {
+  right: auto;
+  left: var(--spacing-xs);
+}
+
+.txn-form__receipt-scanning {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  color: white;
+  font-size: var(--font-size-sm);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+.txn-form__receipt-error {
+  color: var(--color-danger);
+  font-size: var(--font-size-xs);
+  margin-top: var(--spacing-xs);
+  text-align: center;
+}
+
+/* Receipt Items */
+.txn-form__items {
+  margin-bottom: var(--spacing-md);
+  background: var(--color-bg);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.txn-form__items-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.txn-form__items-list {
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.txn-form__item-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 4px 0;
+  border-bottom: 1px solid var(--color-surface-border);
+}
+
+.txn-form__item-row:last-child {
+  border-bottom: none;
+}
+
+.txn-form__item-name-input {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 6px;
+  font-size: var(--font-size-xs);
+  color: var(--color-text);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  transition: border-color var(--transition-fast);
+}
+
+.txn-form__item-name-input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+  background: var(--color-surface);
+}
+
+.txn-form__item-price-input {
+  width: 72px;
+  padding: 4px 6px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-align: right;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  transition: border-color var(--transition-fast);
+}
+
+[dir='rtl'] .txn-form__item-price-input {
+  text-align: left;
+}
+
+.txn-form__item-price-input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+  background: var(--color-surface);
+}
+
+.txn-form__item-delete {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.txn-form__item-delete:hover {
+  color: var(--color-danger);
+  background: rgba(255, 59, 48, 0.1);
+}
+
+.txn-form__item-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  width: 100%;
+  padding: 6px;
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-primary);
+  border: 1px dashed var(--color-surface-border);
+  border-radius: 4px;
+  background: transparent;
+  transition: border-color var(--transition-fast);
+}
+
+.txn-form__item-add:hover {
+  border-color: var(--color-primary);
+}
+
+/* Receipt mode toggle */
+.txn-form__receipt-mode {
+  display: flex;
+  gap: 4px;
+  margin-top: var(--spacing-sm);
+  border: 1px solid var(--color-surface-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.txn-form__receipt-mode-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 8px;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: transparent;
+  transition: all var(--transition-fast);
+}
+
+.txn-form__receipt-mode-btn--active {
+  background: var(--color-primary);
+  color: white;
+}
+
+.txn-form__actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
+}
+
+.txn-form__actions .btn-primary,
+.txn-form__actions .btn-secondary {
+  flex: 1;
+  padding: var(--spacing-md);
+}

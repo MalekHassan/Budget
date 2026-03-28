@@ -1,0 +1,92 @@
+{
+  "app": {
+    "name": "Home Budget",
+    "tagline": "Smart Family Budget Management"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "monthly": "Monthly",
+    "analytics": "Analytics",
+    "settings": "Settings"
+  },
+  "auth": {
+    "signIn": "Sign in with Google",
+    "signOut": "Sign Out",
+    "welcome": "Welcome to Home Budget",
+    "subtitle": "Track your family spending, plan your budget, and save smarter.",
+    "signingIn": "Signing in..."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "totalIncome": "Total Income",
+    "totalExpenses": "Total Expenses",
+    "savings": "Remaining / Savings",
+    "planned": "Planned",
+    "actual": "Actual",
+    "recentTransactions": "Recent Transactions",
+    "addTransaction": "Add Transaction",
+    "noTransactions": "No transactions yet",
+    "overBudget": "Over budget",
+    "underBudget": "Under budget",
+    "onTrack": "On track"
+  },
+  "transaction": {
+    "expense": "Expense",
+    "income": "Income",
+    "amount": "Amount",
+    "category": "Category",
+    "description": "Description",
+    "date": "Date",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "addNew": "Add Transaction"
+  },
+  "budget": {
+    "title": "Budget Setup",
+    "newMonth": "New Month",
+    "copyPrevious": "Copy from Previous Month",
+    "addCategory": "Add Category",
+    "removeCategory": "Remove",
+    "plannedAmount": "Planned Amount",
+    "categoryName": "Category Name",
+    "categoryNameEn": "English Name",
+    "expenses": "Expenses",
+    "income": "Income",
+    "save": "Save Budget",
+    "suggestion": "Avg. last 3 months"
+  },
+  "analytics": {
+    "title": "Analytics",
+    "comparison": "Month Comparison",
+    "trends": "Category Trends",
+    "dateRange": "Date Range",
+    "from": "From",
+    "to": "To",
+    "totalSpent": "Total Spent",
+    "avgMonthly": "Avg. Monthly"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "dark": "Dark",
+    "light": "Light",
+    "household": "Household",
+    "members": "Members",
+    "invite": "Invite Member",
+    "export": "Export Data",
+    "notifications": "Notifications",
+    "about": "About"
+  },
+  "common": {
+    "jd": "JD",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Retry",
+    "noData": "No data available",
+    "confirm": "Confirm",
+    "back": "Back"
+  }
+}

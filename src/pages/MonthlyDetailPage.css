@@ -1,0 +1,287 @@
+.monthly-empty {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--color-text-secondary);
+}
+
+.monthly-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+  text-align: center;
+}
+
+.monthly-summary__item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.monthly-summary__label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.monthly-summary__value {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+}
+
+.monthly-summary__value--income {
+  color: var(--color-success);
+}
+
+.monthly-summary__value--expense {
+  color: var(--color-danger);
+}
+
+.monthly-table-section {
+  margin-bottom: var(--spacing-lg);
+}
+
+.monthly-table-section h2 {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-text-secondary);
+}
+
+.monthly-table {
+  overflow-x: auto;
+  padding: var(--spacing-sm);
+}
+
+.monthly-table__header,
+.monthly-table__row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 20px;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) 0;
+  font-size: var(--font-size-xs);
+  align-items: center;
+}
+
+.monthly-table__header {
+  color: var(--color-text-muted);
+  font-weight: 600;
+  border-bottom: 1px solid var(--color-surface-border);
+  padding-bottom: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
+}
+
+.monthly-table__row {
+  border-bottom: 1px solid var(--color-surface-border);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  padding: var(--spacing-xs) 2px;
+  border-radius: var(--radius-sm);
+}
+
+.monthly-table__row:last-child {
+  border-bottom: none;
+}
+
+.monthly-table__row:hover {
+  background: var(--color-surface-hover);
+}
+
+.monthly-table__row--active {
+  background: var(--color-primary-light);
+}
+
+.monthly-table__row--total {
+  font-weight: 700;
+  border-top: 2px solid var(--color-surface-border);
+  border-bottom: none;
+  margin-top: var(--spacing-xs);
+  cursor: default;
+}
+
+.monthly-table__cat {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.text-success {
+  color: var(--color-success);
+}
+
+.text-danger {
+  color: var(--color-danger);
+}
+
+.monthly-txn-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-sm);
+}
+
+.monthly-txn-header h2 {
+  margin-bottom: 0;
+}
+
+/* Month Note Section */
+.monthly-note-section {
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
+}
+
+.monthly-note-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  margin-bottom: var(--spacing-sm);
+}
+
+.monthly-note-edit-icon {
+  color: var(--color-text-muted);
+  margin-inline-start: auto;
+}
+
+.monthly-note-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.monthly-note-placeholder {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  font-style: italic;
+  cursor: pointer;
+}
+
+.monthly-note-edit textarea {
+  width: 100%;
+  padding: var(--spacing-sm);
+  background: var(--color-bg);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.monthly-note-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-xs);
+  justify-content: flex-end;
+}
+
+.btn-sm {
+  padding: 4px 12px;
+  font-size: var(--font-size-xs);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Category Note Toggle */
+.monthly-note-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--color-text-muted);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-fast);
+}
+
+.monthly-note-toggle:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+/* Category Note Icon (sticky) */
+.monthly-cat-note-icon {
+  color: var(--color-warning);
+  margin-inline-start: 4px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.monthly-table__cat {
+  display: flex;
+  align-items: center;
+}
+
+/* Category Note Panel */
+.monthly-cat-note {
+  padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-sm);
+  background: var(--color-bg);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  margin-bottom: var(--spacing-xs);
+  border-left: 2px solid var(--color-warning);
+}
+
+[dir='rtl'] .monthly-cat-note {
+  border-left: none;
+  border-right: 2px solid var(--color-warning);
+}
+
+.monthly-cat-note-view {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+}
+
+.monthly-cat-note-view p {
+  font-size: var(--font-size-xs);
+  color: var(--color-text);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  flex: 1;
+}
+
+.monthly-cat-note-view svg {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Lock Button */
+.monthly-lock-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--color-surface-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.monthly-lock-btn:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+.monthly-lock-btn--locked {
+  background: var(--color-danger-light);
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.monthly-lock-btn--locked:hover {
+  background: var(--color-danger-light);
+  opacity: 0.8;
+}

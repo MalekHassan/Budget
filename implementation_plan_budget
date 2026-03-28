@@ -1,0 +1,434 @@
+# 💰 Malek's Home Budget PWA — Implementation Plan
+
+## Overview
+
+Build a **bilingual (EN/AR) Progressive Web App** for personal/family budget management. The app replaces the current Google Sheets workflow with a modern, mobile-first experience while maintaining the ability to import existing Sheet data. Both Malek and his wife (آية) share the same household data in real-time.
+
+**Currency**: Jordanian Dinar (JD)
+**Users**: Malek + آية (shared household)
+**Hosting**: Firebase Hosting (free)
+
+---
+
+## User Review Required
+
+> [!IMPORTANT]
+> **Firebase Project Setup**: You will need to create a free Firebase project. I will guide you through this step-by-step during execution. It requires a Google account (which you already have).
+
+> [!IMPORTANT]
+> **Google Sheets "Parallel" Use**: The app will have an **Import from Google Sheets** feature. You can continue using Sheets if you want, and import that data into the app at any time. However, the app will NOT auto-sync with Sheets in real-time — you'd manually trigger an import. Over time, the app's built-in transaction entry should be easier than using Sheets directly.
+
+> [!WARNING]
+> **Push Notifications**: Push notifications require Firebase Cloud Messaging setup and HTTPS. They will work on Android but have limited support on iOS Safari (iOS 16.4+). Visual in-app alerts will always work on all platforms.
+
+---
+
+## Tech Stack
+
+| Layer | Technology | Why |
+|-------|-----------|-----|
+| **Framework** | Vite + React 18 + TypeScript | Fast, modern, great DX |
+| **Styling** | Vanilla CSS (custom properties) | Full control, RTL support for Arabic |
+| **Backend** | Firebase (free Spark plan) | Auth, Database, Hosting — all free |
+| **Auth** | Firebase Auth (Google Sign-in) | Both users sign in with Google |
+| **Database** | Cloud Firestore | Real-time sync, offline support, free tier: 50K reads/20K writes per day |
+| **Charts** | Recharts | React-native charting, lightweight |
+| **i18n** | react-i18next | Industry standard for bilingual apps |
+| **PWA** | vite-plugin-pwa (Workbox) | Service worker, offline caching, installable |
+| **Notifications** | Firebase Cloud Messaging | Push alerts for budget limits |
+| **Icons** | Lucide React | Lightweight, beautiful icons |
+| **Date Handling** | date-fns | Lightweight date utilities |
+
+---
+
+## Data Model (Firestore)
+
+### Collections Structure
+
+```
+households/
+  {householdId}/
+    name: "Malek & Aya's Budget"
+    members: ["malek@gmail.com", "aya@gmail.com"]
+    currency: "JD"
+    createdAt: timestamp
+
+users/
+  {uid}/
+    email: string
+    displayName: string
+    householdId: string
+    language: "en" | "ar"
+    createdAt: timestamp
+
+months/
+  {householdId}_{YYYY_MM}/          # e.g., "abc123_2026_01"
+    householdId: string
+    year: 2026
+    month: 1                         # 1-12
+    expenseCategories: [
+      { name: "بنزين", nameEn: "Fuel", planned: 100 },
+      { name: "اكل برا", nameEn: "Eating Out", planned: 20 },
+      ...
+    ]
+    incomeCategories: [
+      { name: "الراتب", nameEn: "Salary", planned: 1295 },
+      { name: "Cash", nameEn: "Cash", planned: 0 },
+      ...
+    ]
+    createdAt: timestamp
+    createdBy: uid
+
+transactions/
+  {autoId}/
+    householdId: string
+    monthKey: "2026_01"              # for easy querying
+    date: timestamp                   # actual transaction date
+    amount: number                    # always positive
+    type: "expense" | "income"
+    category: "بنزين"                # Arabic category name (matches month config)
+    description: "بنزين ٢٠ لتر"
+    createdBy: uid                    # who entered it
+    createdAt: timestamp
+    updatedAt: timestamp
+```
+
+### Key Design Decisions
+- **Household concept**: Both users belong to one household. All data is shared at the household level.
+- **Month document**: Stores the planned budget per category for that specific month. Categories can vary month-to-month.
+- **Transactions**: Flat collection with `householdId` and `monthKey` for efficient querying.
+- **Category names in Arabic**: Since your categories are in Arabic, we store the Arabic name as the primary key and optionally an English translation for the bilingual UI.
+
+---
+
+## Features & Pages
+
+### 1. 🔐 Authentication Page
+- Google Sign-in button
+- After first sign-in, create/join a household
+- Invite wife by email (she signs in → auto-joins household)
+
+### 2. 📊 Dashboard (Home Page)
+- **Current month overview** at a glance:
+  - Total Income (Planned vs Actual) — progress bar
+  - Total Expenses (Planned vs Actual) — progress bar
+  - Savings this month (income - expenses)
+  - Savings percentage indicator (+3% / -5%)
+- **Category breakdown**: Horizontal bars showing each expense category (planned vs actual)
+  - 🟢 Green: under budget
+  - 🟡 Yellow: 80-100% of budget
+  - 🔴 Red: over budget
+- **Recent transactions**: Last 5-10 transactions with swipe-to-edit/delete
+- **Quick-add FAB** (floating action button) to add a transaction
+
+### 3. ➕ Add Transaction (Bottom Sheet / Modal)
+- **Quick entry form**:
+  - Date picker (defaults to today)
+  - Type toggle: Expense / Income
+  - Amount input (numeric keypad)
+  - Category dropdown (filtered by type, shows categories from current month's plan)
+  - Description text field (free text, Arabic/English)
+  - Save button
+- **Smart features**:
+  - Recently used categories shown first
+  - Amount suggestions based on history (e.g., "بنزين usually ~20 JD")
+  - Quick repeat: tap a recent transaction to duplicate it with today's date
+
+### 4. 📅 Monthly Detail Page
+- Full breakdown of a selected month
+- **Summary cards**: Income, Expenses, Savings
+- **Expense table**: Category | Planned | Actual | Diff (like your Google Sheet)
+- **Income table**: Same structure
+- **Transaction list**: All transactions for the month, filterable by category
+- **Charts**:
+  - Pie/donut chart of expense distribution
+  - Daily spending line chart (cumulative spending through the month)
+
+### 5. 📈 Analytics Page
+- **Multi-month comparison**:
+  - Bar chart: Total expenses by month (last 6-12 months)
+  - Line chart: Savings trend over time
+  - Stacked bar: Category breakdown across months
+- **Custom aggregation**:
+  - Date range picker (from → to)
+  - Aggregate by: Day / Week / Month / Year
+  - Shows totals by category for the selected range
+  - "How much did I spend on بنزين in the last 3 months?"
+- **Category trends**:
+  - Select a category → see its planned vs actual over time
+  - Identify which categories consistently go over budget
+
+### 6. 🗓️ Budget Setup Page (Monthly Planning)
+- Create a new month's budget
+- **Copy from previous month**: Pre-fills categories and planned amounts from last month
+- Edit planned amounts for each category
+- Add/remove categories (both expense and income)
+- Both users can edit the plan
+
+### 7. 📥 Import from Google Sheets
+- Paste a Google Sheet URL
+- App fetches the CSV data (using public export URL)
+- Preview the parsed data (transactions + budget plan)
+- Confirm import → saves to Firestore
+- Handles the specific structure of Malek's sheets (Summary + Transactions tabs)
+
+### 8. ⚙️ Settings Page
+- Language toggle (English / العربية)
+- Household management (view members, invite)
+- Notification preferences (which categories to alert on, threshold %)
+- Export data (JSON / CSV)
+- About / version
+
+---
+
+## UI/UX Design
+
+### Design System
+- **Theme**: Dark mode primary (modern, premium feel), with light mode option
+- **Colors**:
+  - Primary: `#6C63FF` (vibrant purple)
+  - Success: `#00C9A7` (teal green)
+  - Warning: `#FFB800` (amber)
+  - Danger: `#FF6B6B` (coral red)
+  - Background: `#0F0F1A` (deep navy dark)
+  - Surface: `#1A1A2E` (card background)
+  - Text: `#E8E8F0` (light gray)
+- **Typography**: Inter (Latin) + Cairo (Arabic) from Google Fonts
+- **Border radius**: 12-16px (rounded, friendly)
+- **Glassmorphism**: Semi-transparent cards with backdrop blur
+- **Animations**: Framer Motion for page transitions, micro-interactions
+
+### RTL Support
+- CSS `direction: rtl` when Arabic is selected
+- CSS logical properties (`margin-inline-start` instead of `margin-left`)
+- Layout mirrors automatically
+
+### Mobile-First
+- Designed for phones (360-428px width)
+- Bottom navigation bar (Dashboard, Monthly, Analytics, Settings)
+- Pull-to-refresh on transaction lists
+- Swipe gestures for quick actions
+
+---
+
+## Proposed Changes
+
+### Project Setup
+
+#### [NEW] `package.json`
+Vite + React + TypeScript project with all dependencies.
+
+#### [NEW] `vite.config.ts`
+Vite configuration with PWA plugin, React plugin.
+
+#### [NEW] `tsconfig.json`
+TypeScript configuration.
+
+#### [NEW] `public/manifest.json`
+PWA manifest with app name, icons, theme color.
+
+#### [NEW] `public/icons/`
+App icons in various sizes (192x192, 512x512).
+
+---
+
+### Firebase Configuration
+
+#### [NEW] `src/firebase/config.ts`
+Firebase initialization (apiKey, projectId, etc.).
+
+#### [NEW] `src/firebase/auth.ts`
+Google sign-in, sign-out, auth state listener.
+
+#### [NEW] `src/firebase/firestore.ts`
+Firestore CRUD operations for households, months, transactions.
+
+#### [NEW] `src/firebase/messaging.ts`
+Push notification setup and handlers.
+
+---
+
+### Core App Structure
+
+#### [NEW] `src/App.tsx`
+Root component with routing, auth gate, language provider.
+
+#### [NEW] `src/main.tsx`
+Entry point, renders App.
+
+#### [NEW] `index.html`
+HTML entry with meta tags, font links.
+
+#### [NEW] `src/index.css`
+Global styles, CSS custom properties, dark/light theme, RTL support.
+
+---
+
+### Pages
+
+#### [NEW] `src/pages/LoginPage.tsx`
+Google sign-in, household create/join flow.
+
+#### [NEW] `src/pages/DashboardPage.tsx`
+Monthly overview, category bars, recent transactions, quick-add FAB.
+
+#### [NEW] `src/pages/MonthlyDetailPage.tsx`
+Full month breakdown with tables, charts, transaction list.
+
+#### [NEW] `src/pages/AnalyticsPage.tsx`
+Multi-month comparison, custom aggregation, category trends.
+
+#### [NEW] `src/pages/BudgetSetupPage.tsx`
+Create/edit monthly budget plan, manage categories.
+
+#### [NEW] `src/pages/ImportPage.tsx`
+Google Sheets import wizard.
+
+#### [NEW] `src/pages/SettingsPage.tsx`
+Language, notifications, export, household management.
+
+---
+
+### Components
+
+#### [NEW] `src/components/BottomNav.tsx`
+Bottom navigation bar with 4 tabs.
+
+#### [NEW] `src/components/TransactionForm.tsx`
+Add/edit transaction modal/bottom sheet.
+
+#### [NEW] `src/components/CategoryBar.tsx`
+Horizontal progress bar for planned vs actual.
+
+#### [NEW] `src/components/SummaryCard.tsx`
+Income/Expense/Savings summary card with glassmorphism.
+
+#### [NEW] `src/components/TransactionItem.tsx`
+Single transaction row with swipe actions.
+
+#### [NEW] `src/components/MonthPicker.tsx`
+Month/year selector component.
+
+#### [NEW] `src/components/DateRangePicker.tsx`
+Custom date range picker for aggregation.
+
+#### [NEW] `src/components/Charts/`
+- `ExpensePieChart.tsx` — Donut chart of expense categories
+- `MonthlyBarChart.tsx` — Multi-month comparison bars
+- `SpendingLineChart.tsx` — Daily cumulative spending
+- `CategoryTrendChart.tsx` — Category over time
+- `SavingsChart.tsx` — Savings trend line
+
+---
+
+### Localization
+
+#### [NEW] `src/i18n/index.ts`
+i18next configuration.
+
+#### [NEW] `src/i18n/en.json`
+English translations.
+
+#### [NEW] `src/i18n/ar.json`
+Arabic translations.
+
+---
+
+### Hooks & Utilities
+
+#### [NEW] `src/hooks/useAuth.ts`
+Authentication hook.
+
+#### [NEW] `src/hooks/useHousehold.ts`
+Household data hook.
+
+#### [NEW] `src/hooks/useMonthData.ts`
+Current month's budget + transactions hook.
+
+#### [NEW] `src/hooks/useTransactions.ts`
+Transaction CRUD operations hook.
+
+#### [NEW] `src/hooks/useAnalytics.ts`
+Aggregation and comparison calculations hook.
+
+#### [NEW] `src/utils/currency.ts`
+Currency formatting (JD with Arabic/English number formatting).
+
+#### [NEW] `src/utils/sheets-parser.ts`
+Google Sheets CSV parser (handles Malek's specific sheet structure).
+
+#### [NEW] `src/utils/aggregation.ts`
+Date range aggregation logic.
+
+#### [NEW] `src/types/index.ts`
+TypeScript interfaces for all data models.
+
+---
+
+## Open Questions
+
+None — all questions have been answered! ✅
+
+---
+
+## Verification Plan
+
+### Automated Tests
+1. **Build check**: `npm run build` — ensure no TypeScript errors
+2. **PWA audit**: Run Lighthouse in Chrome DevTools → PWA score should be 90+
+3. **Responsive check**: Test in Chrome DevTools mobile emulation (iPhone SE, Pixel 7)
+
+### Manual Verification
+1. **Auth flow**: Sign in with Google → create household → invite second user
+2. **Transaction entry**: Add 5+ transactions → verify they appear in dashboard
+3. **Google Sheets import**: Import January 2026 sheet → verify all ~90 transactions imported correctly
+4. **Monthly comparison**: Compare Jan vs Feb → verify charts show correct data
+5. **Aggregation**: Select custom date range → verify totals match
+6. **Budget alerts**: Enter transaction that exceeds category plan → verify alert appears
+7. **Bilingual**: Toggle EN ↔ AR → verify layout mirrors and text changes
+8. **PWA install**: Open on Android Chrome → install to home screen → verify offline access
+9. **Shared access**: Both users sign in → verify same data visible
+
+### Browser Testing
+- Use browser subagent to navigate through all pages and verify UI rendering
+
+---
+
+## Implementation Phases
+
+### Phase 1: Foundation (Core Setup)
+- Project scaffolding (Vite + React + TypeScript)
+- Firebase project setup + configuration
+- PWA setup (manifest, service worker)
+- Design system (CSS variables, themes, fonts)
+- Routing + bottom navigation
+- Authentication (Google sign-in)
+
+### Phase 2: Data Layer
+- Firestore data model implementation
+- Household creation/joining
+- Monthly budget CRUD
+- Transaction CRUD
+- Real-time listeners
+
+### Phase 3: Core Pages
+- Dashboard page (overview, category bars, recent transactions)
+- Transaction entry form (bottom sheet)
+- Monthly detail page (tables, transaction list)
+- Budget setup page (plan categories + amounts)
+
+### Phase 4: Analytics & Charts
+- Analytics page with multi-month comparison
+- Custom date range aggregation
+- Category trend analysis
+- All chart components
+
+### Phase 5: Import & Polish
+- Google Sheets import wizard
+- Push notifications for budget alerts
+- Settings page (language, preferences, export)
+- Bilingual support (EN/AR with RTL)
+- Animations and micro-interactions
+- Final PWA optimization
+
+**Estimated total: ~40-50 files | 5 phases**
