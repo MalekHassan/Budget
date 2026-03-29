@@ -49,15 +49,20 @@ export function TransactionForm({
     return d.toISOString().split('T')[0];
   });
   const [budgetMonthKey, setBudgetMonthKey] = useState(() => {
-    // Default to first unlocked month, or current month if all unlocked
-    if (!editTransaction) {
-      const unlockedMonths = householdMonths.filter(m => !m.locked);
-      if (unlockedMonths.length > 0) {
-        const firstUnlocked = unlockedMonths[unlockedMonths.length - 1]; // oldest unlocked
-        return `${firstUnlocked.year}_${String(firstUnlocked.month).padStart(2, '0')}`;
-      }
+    // For editing, use the transaction's actual monthKey
+    if (editTransaction) {
+      return editTransaction.monthKey;
     }
-    const d = editTransaction?.date instanceof Date ? editTransaction.date : new Date();
+    
+    // For new transactions, default to first unlocked month
+    const unlockedMonths = householdMonths.filter(m => !m.locked);
+    if (unlockedMonths.length > 0) {
+      const firstUnlocked = unlockedMonths[unlockedMonths.length - 1]; // oldest unlocked
+      return `${firstUnlocked.year}_${String(firstUnlocked.month).padStart(2, '0')}`;
+    }
+    
+    // Fallback to current month
+    const d = new Date();
     return `${d.getFullYear()}_${String(d.getMonth() + 1).padStart(2, '0')}`;
   });
 
@@ -389,8 +394,6 @@ export function TransactionForm({
               value={dateStr}
               onChange={(e) => {
                 setDateStr(e.target.value);
-                const d = new Date(e.target.value);
-                setBudgetMonthKey(`${d.getFullYear()}_${String(d.getMonth() + 1).padStart(2, '0')}`);
               }}
               required
             />
