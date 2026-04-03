@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Languages, LogOut, Sun, Moon, Home, Pencil, Check, X, Users, FileSpreadsheet, Plus, ArrowRightLeft, UserPlus, Mail, Trash2 } from 'lucide-react';
+import { Languages, LogOut, Sun, Moon, Home, Pencil, Check, X, Users, FileSpreadsheet, Plus, ArrowRightLeft, UserPlus, Mail, Trash2, Bell } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useHousehold } from '../hooks/useHousehold';
-import { updateHouseholdName, findHouseholdsByEmail, createHousehold, updateUserProfile, addHouseholdMember, removeHouseholdMember } from '../firebase/firestore';
+import { updateHouseholdName, findHouseholdsByEmail, createHousehold, updateUserProfile, addHouseholdMember, removeHouseholdMember, setPushNotificationsEnabled } from '../firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase/config';
 import { changeLanguage } from '../i18n';
 import type { Household } from '../types';
 import './SettingsPage.css';
@@ -36,6 +38,24 @@ export function SettingsPage() {
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviting, setInviting] = useState(false);
   const [inviteMsg, setInviteMsg] = useState('');
+  const [pushEnabled, setPushEnabled] = useState(true);
+
+  useEffect(() => {
+    if (user?.uid) {
+      getDoc(doc(db, 'users', user.uid)).then(snap => {
+        if (snap.exists()) {
+          setPushEnabled(snap.data().pushNotificationsEnabled ?? true);
+        }
+      });
+    }
+  }, [user]);
+
+  const togglePushNotifications = async () => {
+    if (!user) return;
+    const newVal = !pushEnabled;
+    setPushEnabled(newVal);
+    await setPushNotificationsEnabled(user.uid, newVal);
+  };
 
   useEffect(() => {
     setTheme(theme);
@@ -356,6 +376,21 @@ export function SettingsPage() {
           <span className="settings-value settings-value--highlight">
             {currentLang === 'en' ? 'العربية' : 'English'}
           </span>
+        </div>
+
+        <div className="settings-item glass-card" onClick={togglePushNotifications} role="button" tabIndex={0}>
+          <div className="settings-row">
+            <Bell size={18} />
+            <span>{isAr ? 'تنبيهات الدفع (استلم الإشعارات)' : 'Push Notifications'}</span>
+          </div>
+          <div className="settings-theme-toggle">
+            <div className={`settings-toggle-track ${!pushEnabled ? 'settings-toggle-track--dark' : ''}`}>
+              <div className="settings-toggle-thumb" />
+            </div>
+            <span className={`settings-theme-label ${pushEnabled ? 'active' : ''}`}>
+              {pushEnabled ? (isAr ? 'مفعل' : 'On') : (isAr ? 'معطل' : 'Off')}
+            </span>
+          </div>
         </div>
       </div>
 

@@ -13,6 +13,28 @@ export interface UserProfile {
   householdId: string;
   language: 'en' | 'ar';
   createdAt: Date;
+  pushNotificationsEnabled?: boolean;
+  fcmTokens?: Array<{
+    token: string;
+    savedAt: Date;
+    platform: string;
+  }>;
+}
+
+export interface Notification {
+  id: string;
+  userId: string;
+  householdId: string;
+  monthKey?: string;
+  type: 'transaction_added' | 'transaction_edited' | 'transaction_deleted' | 'month_locked';
+  title: string;
+  message: string;
+  details?: string;
+  actorUid: string;
+  actorName: string;
+  transactionId?: string;
+  createdAt: Date;
+  read: boolean;
 }
 
 export interface CategoryPlan {

@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { useAuth } from './hooks/useAuth';
+import { useFCM } from './hooks/useFCM';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { BottomNav } from './components/BottomNav';
 import { LoginPage } from './pages/LoginPage';
@@ -13,6 +14,8 @@ import { ImportPage } from './pages/ImportPage';
 function AppContent() {
   const { user, loading } = useAuth();
   const location = useLocation();
+
+  useFCM();
 
   if (loading) {
     return (

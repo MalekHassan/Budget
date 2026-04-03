@@ -10,6 +10,8 @@ export default defineConfig({
       includeAssets: ['icons/*.png'],
       manifest: false, // We use our own manifest.json in public/
       workbox: {
+        navigateFallbackDenylist: [/^\/__/],
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         runtimeCaching: [
           {

@@ -11,10 +11,13 @@ import {
   where,
   onSnapshot,
   serverTimestamp,
+  writeBatch,
+  orderBy,
+  limit,
   type Timestamp,
 } from 'firebase/firestore';
 import { db } from './config';
-import type { Household, UserProfile, MonthBudget, Transaction, CategoryPlan } from '../types';
+import type { Household, UserProfile, MonthBudget, Transaction, CategoryPlan, Notification } from '../types';
 
 // ===== Helpers =====
 const toDate = (ts: Timestamp | Date | null): Date => {
@@ -407,4 +410,134 @@ export async function getTransactionsInRange(
   })
   .filter((t) => t.monthKey >= startMonthKey && t.monthKey <= endMonthKey)
   .sort((a, b) => b.monthKey.localeCompare(a.monthKey) || b.date.getTime() - a.date.getTime());
+}
+
+// ===== Notifications =====
+export async function saveFCMToken(uid: string, token: string, platform: string): Promise<void> {
+  const userRef = doc(db, 'users', uid);
+  const snap = await getDoc(userRef);
+  const existing: Array<{ token: string; savedAt: unknown; platform: string }> = snap.data()?.fcmTokens || [];
+  // Remove any previous entries with the same token string to avoid duplicates
+  const filtered = existing.filter((t) => t.token !== token);
+  filtered.push({ token, savedAt: new Date(), platform });
+  await updateDoc(userRef, {
+    fcmTokens: filtered,
+    pushNotificationsEnabled: true,
+  });
+}
+
+export async function setPushNotificationsEnabled(uid: string, enabled: boolean): Promise<void> {
+  await updateDoc(doc(db, 'users', uid), { pushNotificationsEnabled: enabled });
+}
+
+export async function createNotification(notification: Omit<Notification, 'id' | 'createdAt'>): Promise<string> {
+  const ref = await addDoc(collection(db, 'notifications'), {
+    ...notification,
+    createdAt: serverTimestamp(),
+  });
+  return ref.id;
+}
+
+export async function getNotifications(
+  userId: string,
+  options?: { limit?: number; lastVisibleId?: string }
+): Promise<{ notifications: Notification[]; lastVisibleId: string | null; hasMore: boolean }> {
+  const fetchLimit = options?.limit || 20;
+
+  let q = query(
+    collection(db, 'notifications'),
+    where('userId', '==', userId),
+    orderBy('createdAt', 'desc'),
+    limit(fetchLimit + 1) // Fetch one extra to check if there's more
+  );
+
+  const snap = await getDocs(q);
+  const docs = snap.docs;
+  const hasMore = docs.length > fetchLimit;
+  const limitedDocs = hasMore ? docs.slice(0, fetchLimit) : docs;
+
+  const notifications = limitedDocs.map((d) => {
+    const data = d.data();
+    return {
+      id: d.id,
+      userId: data.userId,
+      householdId: data.householdId,
+      monthKey: data.monthKey,
+      type: data.type,
+      title: data.title,
+      message: data.message,
+      details: data.details,
+      actorUid: data.actorUid,
+      actorName: data.actorName,
+      transactionId: data.transactionId,
+      createdAt: toDate(data.createdAt),
+      read: data.read,
+    };
+  });
+
+  const lastVisibleId = hasMore && limitedDocs.length > 0 ? limitedDocs[limitedDocs.length - 1].id : null;
+
+  return { notifications, lastVisibleId, hasMore };
+}
+
+export async function markNotificationAsRead(notificationId: string): Promise<void> {
+  await updateDoc(doc(db, 'notifications', notificationId), { read: true });
+}
+
+export async function markAllNotificationsAsRead(userId: string): Promise<void> {
+  const q = query(
+    collection(db, 'notifications'),
+    where('userId', '==', userId),
+    where('read', '==', false)
+  );
+  const snap = await getDocs(q);
+  const batch = writeBatch(db);
+  snap.docs.forEach((d) => {
+    batch.update(doc(db, 'notifications', d.id), { read: true });
+  });
+  await batch.commit();
+}
+
+export function onNewNotification(userId: string, callback: (notification: Notification) => void) {
+  const q = query(
+    collection(db, 'notifications'),
+    where('userId', '==', userId),
+    orderBy('createdAt', 'desc'),
+    limit(1)
+  );
+
+  return onSnapshot(q, (snap) => {
+    snap.docChanges().forEach((change) => {
+      if (change.type === 'added') {
+        const data = change.doc.data();
+        callback({
+          id: change.doc.id,
+          userId: data.userId,
+          householdId: data.householdId,
+          monthKey: data.monthKey,
+          type: data.type,
+          title: data.title,
+          message: data.message,
+          details: data.details,
+          actorUid: data.actorUid,
+          actorName: data.actorName,
+          transactionId: data.transactionId,
+          createdAt: toDate(data.createdAt),
+          read: data.read,
+        });
+      }
+    });
+  });
+}
+
+export function onUnreadCountChange(userId: string, callback: (count: number) => void) {
+  const q = query(
+    collection(db, 'notifications'),
+    where('userId', '==', userId),
+    where('read', '==', false)
+  );
+
+  return onSnapshot(q, (snap) => {
+    callback(snap.size);
+  });
 }

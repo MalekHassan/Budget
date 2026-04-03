@@ -10,6 +10,7 @@ import { SummaryCard } from '../components/SummaryCard';
 import { CategoryBar } from '../components/CategoryBar';
 import { TransactionItem } from '../components/TransactionItem';
 import { TransactionForm } from '../components/TransactionForm';
+import { NotificationBell } from '../components/NotificationBell';
 import { formatPercentage } from '../utils/currency';
 import { getDefaultMonth } from '../utils/monthUtils';
 import type { Transaction } from '../types';
@@ -48,7 +49,6 @@ export function DashboardPage() {
 
   const [showForm, setShowForm] = useState(false);
   const [editTxn, setEditTxn] = useState<Transaction | null>(null);
-
   const handleSave = async (dataArr: Array<Parameters<typeof addTxn>[0]>) => {
     try {
       if (editTxn && dataArr.length === 1) {
@@ -102,6 +102,7 @@ export function DashboardPage() {
   }
 
   const { totalPlannedExpenses, totalActualExpenses, totalPlannedIncome, totalActualIncome, savings, savingsPercentage } = monthSummary;
+  const isLocked = budget?.locked || false;
   const recentTransactions = transactions.slice(0, 8);
 
   const MONTHS_EN = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -122,7 +123,7 @@ export function DashboardPage() {
       </div>
 
       <div className="dashboard-header">
-        <div />
+        <NotificationBell />
         <div className={`dashboard-savings-badge ${savings >= 0 ? 'positive' : 'negative'}`}>
           {formatPercentage(savingsPercentage)}
         </div>
@@ -189,8 +190,8 @@ export function DashboardPage() {
               <TransactionItem
                 key={txn.id}
                 transaction={txn}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
+                onEdit={isLocked ? undefined : handleEdit}
+                onDelete={isLocked ? undefined : handleDelete}
               />
             ))
           )}
@@ -198,9 +199,11 @@ export function DashboardPage() {
       </section>
 
       {/* FAB */}
-      <button className="fab" onClick={() => { setEditTxn(null); setShowForm(true); }}>
-        <Plus size={24} />
-      </button>
+      {!isLocked && (
+        <button className="fab" onClick={() => { setEditTxn(null); setShowForm(true); }}>
+          <Plus size={24} />
+        </button>
+      )}
 
       {/* Transaction Form Modal */}
       {showForm && (

@@ -32,10 +32,8 @@ const DEFAULT_EXPENSE_CATEGORIES: CategoryPlan[] = [
   { name: 'صيدلية', nameEn: 'Pharmacy', planned: 0 },
   { name: 'فاتورة كهرباء', nameEn: 'Electricity', planned: 0 },
   { name: 'فاتورة مي', nameEn: 'Water Bill', planned: 0 },
-  { name: 'قسط الزواج', nameEn: 'Wedding Installment', planned: 0 },
-  { name: 'شخصي مالك', nameEn: 'Personal Malek', planned: 0 },
-  { name: 'شخصي آية', nameEn: 'Personal Aya', planned: 0 },
-  { name: 'شخصي لين', nameEn: 'Personal Leen', planned: 0 },
+  { name: 'قسط', nameEn: 'Installment', planned: 0 },
+  { name: 'شخصي', nameEn: 'Personal', planned: 0 },
 ];
 
 const DEFAULT_INCOME_CATEGORIES: CategoryPlan[] = [

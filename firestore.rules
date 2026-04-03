@@ -1,0 +1,31 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users can read and write their own profile
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Household members can read/write household data
+    match /households/{householdId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Month budgets accessible to authenticated users
+    match /months/{monthId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Transactions accessible to authenticated users
+    match /transactions/{transactionId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Notifications - users can read their own
+    match /notifications/{notificationId} {
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null;
+    }
+  }
+}

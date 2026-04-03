@@ -49,9 +49,9 @@ export function TransactionForm({
     return d.toISOString().split('T')[0];
   });
   const [budgetMonthKey, setBudgetMonthKey] = useState(() => {
-    // For editing, use the transaction's actual monthKey
-    if (editTransaction) {
-      return editTransaction.monthKey;
+    if (editTransaction?.date instanceof Date) {
+      const d = editTransaction.date;
+      return `${d.getFullYear()}_${String(d.getMonth() + 1).padStart(2, '0')}`;
     }
     
     // For new transactions, default to first unlocked month
